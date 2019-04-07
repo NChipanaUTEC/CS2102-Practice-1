@@ -1,0 +1,281 @@
+
+\documentclass[12pt]{article}
+\usepackage[utf8]{inputenc}
+\title{1st Practice}
+\author{Nicol\'as Chipana}
+\date{April 2019}
+
+\usepackage{natbib}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{amsmath}
+
+\begin{document}
+\lstset {language=C++}
+\maketitle
+
+\section{Warm Up}{
+The merge sort algorithm is a form of a Divide and Conquer algorithm which has a complexity of O(n*log(n)). This complexity is calculated because the array must be iterated through once O(n), then the array is halved multiple times until the recursive function returns the sorted array, each iteration of a part of the array becomes then O(log(n)) in which the logarithm has base 2, because it iterates halves that become smaller through recursion.
+
+	
+However, if the algorthm uses a different method and instead of halving the array divides it in three parts, we could affirm that the complexity of the algorithm would become O(n*log(n)) in which the logarithm is base 3. 
+}
+\section{Competitive Programming}{
+    \subsection{3n+1}{
+    \begin{lstlisting}
+#include <iostream>
+using namespace std;
+
+long long int cycles(long long int number){
+	long long int cont = 1;
+	long long int numero = number;
+	while(numero != 1){
+		if(numero % 2 != 0){
+			numero = (numero*3)+1;
+			cont ++;
+		}
+		else if(numero % 2 == 0){
+			numero /= 2;
+			cont ++;
+			}
+		}
+	return cont;
+}
+
+
+int main(){
+long long int lower,upper;
+long long int mayor = 0;
+while(cin >> lower >> upper){
+	mayor = 0;
+	if(lower > upper){swap(lower,upper);}
+	for(int i = lower; i <= upper; i++){
+		if(cycles(i)>mayor){mayor = cycles(i);}
+		}
+	cout << lower << " " << upper <<" " << mayor<<"\n";
+	}
+return 0;
+}
+
+    \end{lstlisting}
+    }
+    \subsection{Decoder}{
+    \begin{lstlisting}
+#include <iostream>
+#include <string>
+using namespace std;
+
+
+int main(int argc, char const *argv[]) {
+  string line;
+  while(cin >> line){
+    for(int i = 0; i < line.length();i++){
+      cout << (char)(line[i]-7);
+    }
+    cout << endl;
+  }
+
+  return 0;
+}
+
+    \end{lstlisting}
+    }
+}
+\section{Simulation}{
+	\subsection{Implementation of Merge Sort}{
+		\begin{lstlisting}
+void merge(int array[],int left, int middle, int right){
+	int n1 = middle - left + 1;
+	int n2 = right - middle;
+	int tempL[n1];
+	int tempR[n2];
+	for(int i = 0; i < n1; i++){tempL[i] = array[left+i-1];}
+	for(int j = 0; j < n2; j++){tempR[j] = array[middle+j];}
+	int v1 = 0;
+	int v2 = 0;
+	int key;
+	for(int key = left; key<right;key++){
+		if(tempL[v1]<=tempR[v2]){
+			array[key] = tempL[v1];
+			v1+=1;
+		}
+		else{
+			array[key] = tempR[v2];
+			v2+=1;
+		}
+	}
+	while (v1 < n1){
+		array[key] = tempL[v1];
+		v1++;
+		key++;
+	}
+	while (v2 < n2){
+		array[key] = tempR[v2];
+		v2++;
+		key++;
+	}
+}
+
+void mergeSort(int array[],int left,int right){
+	int middle;
+	if(left < right){
+		middle = (left + right) / 2;
+		mergeSort(array,left,middle);
+		mergeSort(array,middle+1,right);
+		merge(array,left,middle,right);
+	}
+}			
+\end{lstlisting}
+\subsection{Implementation of Insertion Sort}{
+\begin{lstlisting}
+void insertSort(int array[],int size){
+	int value,key;
+	for(int i = 1; i<=size; i++){
+		key = array[i];
+		value = i-1;
+		while((key<array[value]) && value>=0){
+			array[value+1]=array[value];
+			value=value-1;
+		}
+		array[value+1] = key;
+	}
+}
+\end{lstlisting}
+\subsection{Array testing algorithm}{
+	\begin{lstlisting}
+void create_array(int cant){
+	int array[cant];
+	int cont = 1;
+	string file = "datos2.txt";
+	ofstream onFile;
+	onFile.open(file, ios::app);
+	clock_t execution_time;
+	for(int i = cant; i > 0; i--){
+		array[i] = cont;
+		cont ++;
+	}
+	execution_time = clock();
+	insertSort(array,cant);
+	mergeSort(array,0,cant);
+	string num = to_string(cant);
+	string time = to_string(((float)(clock()-execution_time))/
+	CLOCKS_PER_SEC);
+	cout << num << " "<< time<<"\n";
+	nFile << (num+" "+time+"\n");
+	onFile.close();
+}
+		
+int main(){
+	for(int i = 10; i < 100000; i++){
+		if(i%1000 == 0){
+			create_array(i);
+		}
+	}
+	return 0;
+}
+	\end{lstlisting}	
+}
+\subsection{Analysis}{
+	While implementing both algorithms I made a automated process to test arrays from size 1 to 10000 in which all the numbers are sorted in decreasing order.
+	
+	Then I used the data recovered to plot the following graph. The X axis is the size of the array and the Y axis is the time in seconds.
+\begin{figure}[h]
+	\includegraphics[width=\linewidth]{Comparison.png}
+\end{figure}
+	As studied in class, insertion sort has a faster growth than merge sort. Insertion sort has an exponential growth a large difference when compared to the growth of Merge Sort. In the graph, Merge sort appears to grow in a linear way, better seen when the array size is more than 4000. In conclusion, using the graph, the imput size in which merge sort is asymptotically better is more than 4000.
+}
+}
+\section{Research}{
+	The Karatsuda's algorithm is a method for which two integers of equal size can be multiplied with more operations but with less computational cost than the, more usually used, grade school multiplication.
+	
+	The algorithm equation is:
+	
+	\begin{equation*}
+		X * Y = 10^n(a*c)+10^{n/2}(a*d+b*c)+b*d
+	\end{equation*}
+	
+	Where "a" is the first half of X, "b" is the latter half of X,"c" is the first half of Y and "d" is the latter half of Y.
+	
+	The algortihm can be computed with a recursive function, which calculates smaller substrings of the original number until it can be resolved with a simpler multiplication.
+	
+	\subsection{Implementation of Code}
+		
+\begin{lstlisting}
+#include <iostream>
+#include <string>
+#include <cmath>
+using namespace std;
+		
+long long int grade_school(string& x,string& y){
+	long long int result = 0;
+	int power1 = 0;
+	int power2 = 0;
+	int value1;
+	int value2;
+	for(int i = y.size()-1; i >= 0; i--){
+		for(int j = x.size()-1; j >= 0; j--){
+			value1 = y[i] - '0';
+			value2 = x[j] - '0';
+			result += (value1*value2)*
+			pow(10,power1+power2);
+			power1 ++;
+		}
+	power2 ++;
+	power1 = 0;
+	}
+	return result;
+}
+		
+long long int karatsuba(string x,string y){
+	if(x.size()==1 && y.size()==1){
+		return stoi(x)*stoi(y);
+	}
+	string a,b,c,d,sum1,sum2;
+	long long int valueAC;
+	long long int valueBD;
+	long long int valuesum;
+	a = x.substr(0,x.size()/2);
+	b = x.substr(x.size()/2,x.size()/2);
+	c = y.substr(0,y.size()/2);
+	d = y.substr(y.size()/2,y.size()/2);
+	valueAC = karatsuba(a,c);
+	valueBD = karatsuba(b,d);
+	sum1 = to_string(stoi(a)+stoi(b));
+	sum2 = to_string(stoi(c)+stoi(d));
+	valuesum = karatsuba(sum1,sum2);
+	return pow(10,x.size())*valueAC+pow(10,x.size()/2)*
+	(valuesum-valueAC-valueBD)+valueBD;
+}
+		
+		
+int main(){
+	string x;
+	string y;
+	cin >> x >> y;
+	long long int result1 = grade_school(x,y);
+	long long int result2 = karatsuba(x,y);
+	cout << result1 <<"\n";
+	cout << result2 <<"\n";
+}
+		\end{lstlisting}
+}
+\subsection{Testing}
+After trying some few cases it seems that both algorithms, in my case, can't handle a big number such as the test cases presented. It seems that the recursion happening in Karatsuba overflows the operation stack and fails. In the other hand, the grade-school algorithm returns a negative number because of a long long integer overflow.
+
+However, both algorithms work fine on integers from size 1 to 6.
+
+\section{Wrapping Up}{
+	In conclusion, after plotting all five functions, the functions in increasing growth order are:
+	\begin{itemize}
+		\item $x^{ln(x)}$
+		\item $x^2$
+		\item $2^x$
+		\item $x^2*ln(x)$
+		\item $2^{2^x}$
+	\end{itemize}
+		\begin{figure}[b!]
+		\includegraphics[scale=0.3]{functions.png}
+	\end{figure}
+}
+\end{document}
